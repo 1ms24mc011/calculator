@@ -1,11 +1,6 @@
 pipeline {
     agent any
 
-    tools {
-        // This enables Jenkins automatic installation of Sonar Scanner
-        sonarQubeScanner 'sonar-scanner'
-    }
-
     stages {
 
         stage('Checkout') {
@@ -46,7 +41,9 @@ pipeline {
             steps {
                 withCredentials([string(credentialsId: 'sonar123', variable: 'sqa_9d8362f549ddbec70d4c3c58d1bee9d2fe240c5c')]) {
                     script {
-                        def scannerHome = tool 'sonar-scanner'
+                        // IMPORTANT: Correct tool type for Sonar Scanner
+                        def scannerHome = tool name: 'sonar-scanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
+
                         withSonarQubeEnv('mysonar') {
                             sh """
                                 ${scannerHome}/bin/sonar-scanner \

@@ -35,6 +35,22 @@ pipeline {
                 sh 'docker run -d -p 8080:80 --name calculator-container calculator-app:latest'
             }
         }
+
+        stage('SonarQube Analysis') {
+            steps {
+                withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'sqa_9d8362f549ddbec70d4c3c58d1bee9d2fe240c5c')]) {
+                    withSonarQubeEnv('MySonar') {
+                        sh """
+                            sonar-scanner \
+                            -Dsonar.projectKey=calculator \
+                            -Dsonar.sources=. \
+                            -Dsonar.host.url=http://localhost:9000 \
+                            -Dsonar.login=$sqa_9d8362f549ddbec70d4c3c58d1bee9d2fe240c5c
+                        """
+                    }
+                }
+            }
+        }
     }
 
     post {

@@ -1,7 +1,13 @@
 pipeline {
     agent any
 
+    tools {
+        // This enables Jenkins automatic installation of Sonar Scanner
+        sonarQubeScanner 'sonar-scanner'
+    }
+
     stages {
+
         stage('Checkout') {
             steps {
                 git branch: 'master', url: 'https://github.com/1ms24mc011/calculator'
@@ -39,14 +45,17 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withCredentials([string(credentialsId: 'sonar123', variable: 'sqa_9d8362f549ddbec70d4c3c58d1bee9d2fe240c5c')]) {
-                    withSonarQubeEnv('mysonar') {
-                        sh """
-                            sonar-scanner \
-                            -Dsonar.projectKey=calculator \
-                            -Dsonar.sources=. \
-                            -Dsonar.host.url=http://localhost:9000 \
-                            -Dsonar.login=$sqa_9d8362f549ddbec70d4c3c58d1bee9d2fe240c5c
-                        """
+                    script {
+                        def scannerHome = tool 'sonar-scanner'
+                        withSonarQubeEnv('mysonar') {
+                            sh """
+                                ${scannerHome}/bin/sonar-scanner \
+                                -Dsonar.projectKey=calculator \
+                                -Dsonar.sources=. \
+                                -Dsonar.host.url=http://localhost:9000 \
+                                -Dsonar.login=${sqa_9d8362f549ddbec70d4c3c58d1bee9d2fe240c5c}
+                            """
+                        }
                     }
                 }
             }
@@ -55,7 +64,7 @@ pipeline {
 
     post {
         success {
-            echo "🚀 Deployment Successful! Visit: http://192.168.1.36:8080"
+            echo "🚀 Deployment Successful! Visit: http://10.20.31.131 :8080"
         }
     }
 }

@@ -39,7 +39,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withCredentials([string(credentialsId: 'sonar123', variable: 'sqa_9d8362f549ddbec70d4c3c58d1bee9d2fe240c5c')]) {
-                    withSonarQubeEnv('MySonar') {
+                    withSonarQubeEnv('mysonar') {
                         sh """
                             sonar-scanner \
                             -Dsonar.projectKey=calculator \

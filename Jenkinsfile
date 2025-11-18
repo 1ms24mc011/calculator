@@ -9,13 +9,6 @@ pipeline {
             }
         }
 
-        stage('Build React App') {
-            steps {
-                sh 'npm install'
-                sh 'npm run build'
-            }
-        }
-
         stage('Build Docker Image') {
             steps {
                 sh 'docker build -t calculator-app:latest .'
